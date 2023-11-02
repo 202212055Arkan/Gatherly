@@ -9,6 +9,9 @@ const interestController = require('../controllers/interest.controller');
 //     .put()
 //     .delete()
 
-router.post('/',interestController.addInterest);
+router.route('/')
+    .get(interestController.getAllInterest)
+    .post(interestController.addInterest)
+    .delete(interestController.deleteInterests);
     
 module.exports = router;

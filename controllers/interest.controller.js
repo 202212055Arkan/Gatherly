@@ -3,14 +3,14 @@ const Interests = require("../models/interest.model");
 
 exports.addInterest = async (req,res) => {
     try {
-        const {name} = req.body;
-        let interestbyname = await Interests.findOne({interestName: name});
+        const {interestName} = req.body;
+        let interestbyname = await Interests.findOne({interestName: interestName});
         if(interestbyname)
         {
-            response.recordAlreadyExistResponse(res,"Interest Already Exist");
+            return response.recordAlreadyExistResponse(res,"Interest Already Exist");
         }
         const interest = new Interests({
-            interestName : name
+            interestName : interestName
         })
         interest.save();
         response.successfullyCreatedResponse(res,interest,"Interest Created Successfully");
@@ -21,16 +21,17 @@ exports.addInterest = async (req,res) => {
 }
 exports.getAllInterest = async (req,res) => {
     try {
-        const interest = await Interests.find({});
-        response.successResponse(res,interest);       
+        const interests = await Interests.find({});
+        response.successResponse(res,interests);       
     } catch (error) {
         console.log(error); 
         response.serverErrorResponse(res,error,"Not created");
     }
 }
-exports.deleteInterest = async (req,res) => {
+exports.deleteInterests = async (req,res) => {
     try {
-        
+        const obj = await Interests.deleteMany({});
+        response.successResponse(res,obj);
     } catch (error) {
         console.log(error); 
         response.serverErrorResponse(res,error,"Not created");
