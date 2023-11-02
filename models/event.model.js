@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+
+
 const eventSchema = new Schema({
     eventName: {
         type: String,
@@ -22,10 +24,15 @@ const eventSchema = new Schema({
     date: {
         type: Date,
         required: true,
-        validate: [value >= new Date(),"Invalid Date"]
+        validate: {
+            validator: function(value) {
+              return value >= new Date();
+            },
+            message: 'Invalid Date'
+          }      
     },
     // comments: 
     // faqs: List<Faq>
     attendees: []
 })
-module.exports = mongoose.model('Communities', communitySchema)
+module.exports = eventSchema;

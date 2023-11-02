@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+
 const eventSchema = require("./event.model");
+
 const communitySchema = new Schema( {
     communityName: {
         type: String,
