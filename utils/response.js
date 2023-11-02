@@ -28,7 +28,9 @@ const unauthorizedResponse = (res, msg = "Unauthorized") => {
 const notFoundResponse = (res, msg = "Route Not Found") => {
     res.status(404).json({ message: msg, status: 404 });
 };
-
+const recordAlreadyExistResponse = (res, msg = "Record Already Exist") => {
+    res.status(409).json({ message: msg, status: 409 });
+};
 const serverErrorResponse = (res, msg = "Server Error") => {
     res.status(500).json({ message: msg, status: 500 });
 };
@@ -39,5 +41,6 @@ module.exports = {
     badRequestResponse,
     notFoundResponse,
     serverErrorResponse,
+    recordAlreadyExistResponse,
     unauthorizedResponse,
 };
