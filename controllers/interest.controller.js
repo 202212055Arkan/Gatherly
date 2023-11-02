@@ -12,7 +12,7 @@ exports.addInterest = async (req,res) => {
         const interest = new Interests({
             interestName : interestName
         })
-        interest.save();
+        await interest.save();
         response.successfullyCreatedResponse(res,interest,"Interest Created Successfully");
     } catch (error) {
         console.log(error); 

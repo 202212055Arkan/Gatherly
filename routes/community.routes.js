@@ -10,9 +10,8 @@ const communityController = require('../controllers/community.controller');
 //     .delete()
 
 router.route('/')
-    .get()
+    .get(communityController.getAllCommunity)
     .post(communityController.createCommunity)
-    .put()
     .delete(communityController.deleteCommunity)
 
 
