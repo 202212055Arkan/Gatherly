@@ -1,5 +1,6 @@
 const response = require("../utils/response");
 const Interests = require("../models/interest.model");
+const interestModel = require("../models/interest.model");
 
 exports.addInterest = async (req,res) => {
     try {
@@ -19,6 +20,7 @@ exports.addInterest = async (req,res) => {
         response.serverErrorResponse(res,error,"Not created");
     }
 }
+
 exports.getAllInterest = async (req,res) => {
     try {
         const interests = await Interests.find({});
@@ -37,3 +39,103 @@ exports.deleteInterests = async (req,res) => {
         response.serverErrorResponse(res,error,"Not created");
     }
 }
+exports.addEventInIntrest=async(intrestName,eventId,communityId,res)=>{
+    try {
+    
+        const interest=await interestModel.findOne({interestName:intrestName});
+        if(interest){
+            interest.events.push({
+                eventID:eventId,
+                communityId:communityId
+            });
+            interest.save();
+            console.log("Event added to the intrest");
+        }
+        else
+        {
+            console.log("Intrest doesn't Exist")
+        }
+    } catch (error) {
+        console.log("Error in adding Event in intrest");
+    }
+}
+exports.addCommunityInIntrest=async(intrestName,communityId,res)=>{
+    try {
+       
+        const interest=await interestModel.findById(intrestName);
+        if(interest){
+            interest.communities.push({
+                communityId:communityId
+            });
+            interest.save();
+            console.log("Community added to the intrest");
+        }
+        else
+        {
+            console.log(res,"Intrest doesn't Exist")
+        }
+    } catch (error) {
+        console.log(error,"Not created");
+    }
+}
+exports.deleteEvent=async(intrestName,communityId,eventId,res)=>{
+    try {
+
+        const updatedInterests = await Interests.findOneAndUpdate(
+            intrestName,
+            {
+                $pull: {
+                    events: {
+                        eventID: eventId,
+                        communityId: communityId,
+                    },
+                },
+            },
+            { new: true }
+        );
+        if(updatedInterests)
+        {
+            updatedInterests.save();
+            console.log("Event deleted Sucessfully");
+        }
+        else
+        {
+            console.log("Response Not Found");
+        }
+    }
+     catch (error) {
+        console.log(error,"Not created");
+    }
+
+}
+exports.deleteCommunity=async(intrestName,communityId,res)=>{
+    try {
+
+        const updatedInterests = await Interests.findOneAndUpdate(
+            intrestName,
+            {
+                $pull: {
+                    communities: {
+                        communityId: communityId,
+                    },
+                },
+            },
+            { new: true }
+        );
+        
+        if(updatedInterests)
+        {
+            updatedInterests.save();
+            console.log("Community deleted Sucessfully");
+        }
+        else
+        {
+            console.log("Response Not Found");
+        }
+    }
+     catch (error) {
+        console.log(error,"Not created");
+    }
+
+}
+

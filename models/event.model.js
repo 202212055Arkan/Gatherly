@@ -11,6 +11,10 @@ const eventSchema = new Schema({
         type: String,
         required: true
     },
+    intrest:{
+        type:String,
+        // required:true,
+    },
     location: {
         lg: {type: String},
         lt: {type: String}

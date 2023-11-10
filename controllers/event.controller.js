@@ -1,6 +1,7 @@
 const response = require("../utils/response");
 // const Communities = require("../models/community.model");
 const communityModel = require("../models/community.model");
+const { addEventInIntrest } = require("./interest.controller");
 
 exports.getEvents=async(req,res)=>{
     try{
@@ -21,11 +22,11 @@ exports.getEvents=async(req,res)=>{
 }
 exports.createEvents=async(req,res)=>{
     try {
-        const {eventName, description, location,city,eventType,date} = req.body;
+        const {eventName, description,intrest,location,city,eventType,date} = req.body;
         
         const cid=req.params.cid;
         const community=await communityModel.findById(cid);
-        // console.log(cid)
+        console.log(req.body);
         if(community)
         {
             community.events.push({
@@ -34,9 +35,12 @@ exports.createEvents=async(req,res)=>{
                 location:location,
                 city:city,
                 eventType:eventType,
+                intrest:intrest,
                 date:date
             })
             await community.save();
+            console.log("-->",community.events[0].id);
+            addEventInIntrest(intrest,community.events[0].id,cid);
             response.successfullyCreatedResponse(res,community.events,"Event Created");
         }
         else
