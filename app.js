@@ -27,7 +27,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/interests',interestRouter);
 app.use('/communities',communityRouter);
-app.use('/events',eventRouter);
+// app.use('/communities/:cid/events', eventRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
