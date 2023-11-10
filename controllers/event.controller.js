@@ -1,7 +1,7 @@
 const response = require("../utils/response");
 // const Communities = require("../models/community.model");
 const communityModel = require("../models/community.model");
-const { addEventInIntrest } = require("./interest.controller");
+const { addEventInIntrest, deleteAlltheEventOfOneCommunity } = require("./interest.controller");
 
 exports.getEvents=async(req,res)=>{
     try{
@@ -39,6 +39,7 @@ exports.createEvents=async(req,res)=>{
                 date:date
             })
             await community.save();
+            //have to confirm this
             console.log("-->",community.events[0].id);
             addEventInIntrest(intrest,community.events[0].id,cid);
             response.successfullyCreatedResponse(res,community.events,"Event Created");
@@ -67,6 +68,9 @@ exports.deleteEvents=async(req,res)=>{
          
                 community.events = [];
                 await community.save();
+                //checking
+                const tech="Technology";
+                deleteAlltheEventOfOneCommunity(communityId,tech);
                 response.successResponse(res, "All events deleted successfully");
 
         }

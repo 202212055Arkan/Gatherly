@@ -136,6 +136,34 @@ exports.deleteCommunity=async(intrestName,communityId,res)=>{
      catch (error) {
         console.log(error,"Not created");
     }
+}
+exports.deleteAlltheEventOfOneCommunity=async(communityId,intrestName)=>{
+    try {
+        console.log(intrestName);
+        const updatedInterests = await Interests.findOneAndUpdate(
+            intrestName,
+            {
+                $pull: {
+                    events: {
+                        communityId: communityId,
+                    },
+                },
+            },
+            { new: true }
+        );
+        if(updatedInterests)
+        {
+            updatedInterests.save();
+            console.log("Event deleted Sucessfully");
+        }
+        else
+        {
+            console.log("Response Not Found");
+        }
+    }
+     catch (error) {
+        console.log(error,"Not created");
+    }
 
 }
 
