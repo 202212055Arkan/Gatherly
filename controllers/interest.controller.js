@@ -2,87 +2,86 @@ const response = require("../utils/response");
 const Interests = require("../models/interest.model");
 const interestModel = require("../models/interest.model");
 
-exports.addInterest = async (req,res) => {
+exports.addInterest = async (req, res) => {
     try {
-        const {interestName} = req.body;
-        let interestbyname = await Interests.findOne({interestName: interestName});
-        if(interestbyname)
-        {
-            return response.recordAlreadyExistResponse(res,"Interest Already Exist");
+        const { interestName } = req.body;
+        let interestbyname = await Interests.findOne({ interestName: interestName });
+        if (interestbyname) {
+            return response.recordAlreadyExistResponse(res, "Interest Already Exist");
         }
         const interest = new Interests({
-            interestName : interestName
+            interestName: interestName
         })
         await interest.save();
-        response.successfullyCreatedResponse(res,interest,"Interest Created Successfully");
+        response.successfullyCreatedResponse(res, interest, "Interest Created Successfully");
     } catch (error) {
-        console.log(error); 
-        response.serverErrorResponse(res,error,"Not created");
+        console.log(error);
+        response.serverErrorResponse(res, error, "Not created");
     }
 }
 
-exports.getAllInterest = async (req,res) => {
+exports.getAllInterest = async (req, res) => {
     try {
         const interests = await Interests.find({});
-        response.successResponse(res,interests);       
+        response.successResponse(res, interests);
     } catch (error) {
-        console.log(error); 
-        response.serverErrorResponse(res,error,"Not created");
+        console.log(error);
+        response.serverErrorResponse(res, error, "Not created");
     }
 }
-exports.deleteInterests = async (req,res) => {
+exports.deleteInterests = async (req, res) => {
     try {
         const obj = await Interests.deleteMany({});
-        response.successResponse(res,obj);
+        response.successResponse(res, obj);
     } catch (error) {
-        console.log(error); 
-        response.serverErrorResponse(res,error,"Not created");
+        console.log(error);
+        response.serverErrorResponse(res, error, "Not created");
     }
 }
-exports.addEventInIntrest=async(intrestName,eventId,communityId,res)=>{
+exports.addEventInIntrest = async (intrestName, eventId, communityId, res) => {
     try {
-    
-        const interest=await interestModel.findOne({interestName:intrestName});
-        if(interest){
+
+        const interest = await interestModel.findOne({ interestName: intrestName });
+        if (interest) {
             interest.events.push({
-                eventID:eventId,
-                communityId:communityId
+                eventID: eventId,
+                communityId: communityId
             });
             interest.save();
             console.log("Event added to the intrest");
         }
-        else
-        {
+        else {
             console.log("Intrest doesn't Exist")
         }
     } catch (error) {
         console.log("Error in adding Event in intrest");
     }
 }
-exports.addCommunityInIntrest=async(intrestName,communityId,res)=>{
+exports.addCommunityInIntrest = async (intrestName, communityId, res) => {
     try {
-       
-        const interest=await interestModel.findById(intrestName);
-        if(interest){
+
+        const interest = await interestModel.findById(intrestName);
+        if (interest) {
             interest.communities.push({
-                communityId:communityId
+                communityId: communityId
             });
             interest.save();
             console.log("Community added to the intrest");
         }
-        else
-        {
-            console.log(res,"Intrest doesn't Exist")
+        else {
+            console.log(res, "Intrest doesn't Exist")
         }
     } catch (error) {
-        console.log(error,"Not created");
+        console.log(error, "Not created");
     }
 }
-exports.deleteEvent=async(intrestName,communityId,eventId,res)=>{
+exports.deleteEventFromInterest= async (intrestName, communityId, eventId, res) => {
     try {
 
-        const updatedInterests = await Interests.findOneAndUpdate(
-            intrestName,
+        const updatedInterests = await interestModel.findOneAndUpdate(
+            {
+                interestName: intrestName
+            },
             {
                 $pull: {
                     events: {
@@ -93,26 +92,26 @@ exports.deleteEvent=async(intrestName,communityId,eventId,res)=>{
             },
             { new: true }
         );
-        if(updatedInterests)
-        {
+        if (updatedInterests) {
             updatedInterests.save();
             console.log("Event deleted Sucessfully");
         }
-        else
-        {
+        else {
             console.log("Response Not Found");
         }
     }
-     catch (error) {
-        console.log(error,"Not created");
+    catch (error) {
+        console.log(error, "Not created");
     }
 
 }
-exports.deleteCommunity=async(intrestName,communityId,res)=>{
+exports.deleteCommunity = async (intrestName, communityId, res) => {
     try {
 
-        const updatedInterests = await Interests.findOneAndUpdate(
-            intrestName,
+        const updatedInterests = await interestModel.findOneAndUpdate(
+            {
+                interestName: intrestName
+            },
             {
                 $pull: {
                     communities: {
@@ -122,26 +121,26 @@ exports.deleteCommunity=async(intrestName,communityId,res)=>{
             },
             { new: true }
         );
-        
-        if(updatedInterests)
-        {
+
+        if (updatedInterests) {
             updatedInterests.save();
             console.log("Community deleted Sucessfully");
         }
-        else
-        {
+        else {
             console.log("Response Not Found");
         }
     }
-     catch (error) {
-        console.log(error,"Not created");
+    catch (error) {
+        console.log(error, "Not created");
     }
 }
-exports.deleteAlltheEventOfOneCommunity=async(communityId,intrestName)=>{
+exports.deleteAlltheEventOfOneCommunity = async (communityId, intrestName) => {
     try {
-        console.log(intrestName);
-        const updatedInterests = await Interests.findOneAndUpdate(
-            intrestName,
+        console.log(intrestName, communityId);
+
+        const updatedInterests = await interestModel.findOneAndUpdate({
+            interestName: intrestName
+        },
             {
                 $pull: {
                     events: {
@@ -151,18 +150,17 @@ exports.deleteAlltheEventOfOneCommunity=async(communityId,intrestName)=>{
             },
             { new: true }
         );
-        if(updatedInterests)
-        {
+        console.log(updatedInterests);
+        if (updatedInterests) {
             updatedInterests.save();
             console.log("Event deleted Sucessfully");
         }
-        else
-        {
+        else {
             console.log("Response Not Found");
         }
     }
-     catch (error) {
-        console.log(error,"Not created");
+    catch (error) {
+        console.log(error, "Not created");
     }
 
 }

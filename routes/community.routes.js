@@ -21,4 +21,9 @@ router.route('/:cid/events')
     .delete(eventController.deleteEvents)
 
 
+router.route('/:cid/events/:eid')
+    .get(eventController.getEventById)
+    .delete(eventController.deleteEventById);
+
+
 module.exports = router;
