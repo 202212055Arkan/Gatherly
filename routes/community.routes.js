@@ -4,26 +4,29 @@ const eventController = require('../controllers/event.controller');
 
 const communityController = require('../controllers/community.controller');
 
-// router.route('/')
-//     .get()
-//     .post()
-//     .put()
-//     .delete()
 
 router.route('/')
     .get(communityController.getAllCommunity)
     .post(communityController.createCommunity)
     .delete(communityController.deleteCommunity)
 
-router.route('/:cid/events')
-    .get(eventController.getEvents)
+router.route('/:cid/currentEvents')
+    .get(eventController.getCurrentEvents)
     .post(eventController.createEvents)
-    .delete(eventController.deleteEvents)
+    .delete(eventController.deleteCurrentEvents)
 
 
-router.route('/:cid/events/:eid')
-    .get(eventController.getEventById)
-    .delete(eventController.deleteEventById);
+router.route('/:cid/pastEvents')
+    .get(eventController.getPastEvents)
+    .delete(eventController.deletePastEvents)
 
+
+router.route('/:cid/currentevents/:eid')
+    .get(eventController.getCurrentEventById)
+    .delete(eventController.deleteCurrentEventById);
+
+router.route('/:cid/pastEvents/:eid')
+    .get(eventController.getPastEventById)
+    .delete(eventController.deletePastEventById);
 
 module.exports = router;

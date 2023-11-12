@@ -17,6 +17,7 @@ const communitySchema = new Schema( {
         required: true
     },
     members: [],
-    events: [eventSchema]
+    currentEvents: [eventSchema],
+    pastEvents:[eventSchema]
   })
   module.exports = mongoose.model('Communities', communitySchema)

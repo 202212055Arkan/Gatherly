@@ -3,12 +3,27 @@ const response = require("../utils/response");
 const communityModel = require("../models/community.model");
 const { addEventInIntrest, deleteAlltheEventOfOneCommunity, deleteEventFromInterest } = require("./interest.controller");
 
-exports.getEvents = async (req, res) => {
+exports.getCurrentEvents = async (req, res) => {
     try {
         const cid = req.params.cid;
         const Community = await communityModel.findById(cid);
         if (Community) {
-            response.successResponse(res, Community.events, "");
+            response.successResponse(res, Community.currentEvents, "");
+        }
+        else {
+            response.notFoundResponse(res, "Community Not Found")
+        }
+    }
+    catch (error) {
+        response.serverErrorResponse(error, "Error in Fetching Events");
+    }
+}
+exports.getPastEvents = async (req, res) => {
+    try {
+        const cid = req.params.cid;
+        const Community = await communityModel.findById(cid);
+        if (Community) {
+            response.successResponse(res, Community.pastEvents, "");
         }
         else {
             response.notFoundResponse(res, "Community Not Found")
@@ -26,7 +41,7 @@ exports.createEvents = async (req, res) => {
         const community = await communityModel.findById(cid);
         console.log(req.body);
         if (community) {
-            community.events.push({
+            community.currentEvents.push({
                 eventName: eventName,
                 description: description,
                 location: location,
@@ -52,7 +67,7 @@ exports.createEvents = async (req, res) => {
 
     }
 }
-exports.deleteEvents = async (req, res) => {
+exports.deleteCurrentEvents = async (req, res) => {
 
     try {
         const communityId = req.params.cid;
@@ -61,7 +76,7 @@ exports.deleteEvents = async (req, res) => {
 
         if (community) {
 
-            community.events = [];
+            community.currentEvents = [];
             await community.save();
             //checking
 
@@ -78,13 +93,39 @@ exports.deleteEvents = async (req, res) => {
     }
 
 }
-exports.getEventById = async (req, res) => {
+exports.deletePastEvents = async (req, res) => {
+
+    try {
+        const communityId = req.params.cid;
+        console.log(communityId);
+        const community = await communityModel.findById(communityId);
+
+        if (community) {
+
+            community.pastEvents = [];
+            await community.save();
+            //checking
+
+            // deleteAlltheEventOfOneCommunity(communityId, community.comType);
+            response.successResponse(res, "All events deleted successfully");
+
+        }
+        else {
+            response.notFoundResponse(res, "Community Not Found")
+        }
+
+    } catch (error) {
+        response.serverErrorResponse(res, error, "Error in deletion of Events");
+    }
+
+}
+exports.getCurrentEventById = async (req, res) => {
     try {
         const communityId = req.params.cid;
         const eventId = req.params.eid;
         const community = await communityModel.findById(communityId);
         if (community) {
-            const foundEvent = community.events.find(event => event._id.equals(eventId));
+            const foundEvent = community.currentEvents.find(event => event._id.equals(eventId));
             response.successResponse(res, foundEvent, "Event fetched successfully");
         }
         else {
@@ -95,7 +136,24 @@ exports.getEventById = async (req, res) => {
         response.serverErrorResponse(res, "Error in event get by id");
     }
 }
-exports.deleteEventById = async (req, res) => {
+exports.getPastEventById = async (req, res) => {
+    try {
+        const communityId = req.params.cid;
+        const eventId = req.params.eid;
+        const community = await communityModel.findById(communityId);
+        if (community) {
+            const foundEvent = community.pastEvents.find(event => event._id.equals(eventId));
+            response.successResponse(res, foundEvent, "Event fetched successfully");
+        }
+        else {
+            response.notFoundResponse(res, "Event not found");
+        }
+
+    } catch (error) {
+        response.serverErrorResponse(res, "Error in event get by id");
+    }
+}
+exports.deleteCurrentEventById = async (req, res) => {
     try {
         const communityId = req.params.cid;
         const eventId = req.params.eid;
@@ -103,7 +161,7 @@ exports.deleteEventById = async (req, res) => {
         const community = await communityModel.findByIdAndUpdate(communityId,
             {
                 $pull: {
-                    events: { _id: eventId }
+                    currentEvents: { _id: eventId }
                 }
             },
             { new: true }
@@ -111,6 +169,32 @@ exports.deleteEventById = async (req, res) => {
         if (community) {
             community.save();
             deleteEventFromInterest(community.comType,communityId,eventId);
+            response.successResponse(res, community, "Event deleted successfully");
+        }
+        else {
+            response.notFoundResponse(res, "Event not found");
+        }
+
+    } catch (error) {
+        response.serverErrorResponse(res, "Error in event get by id");
+    }
+}
+exports.deletePastEventById = async (req, res) => {
+    try {
+        const communityId = req.params.cid;
+        const eventId = req.params.eid;
+
+        const community = await communityModel.findByIdAndUpdate(communityId,
+            {
+                $pull: {
+                    pastEvents: { _id: eventId }
+                }
+            },
+            { new: true }
+        )
+        if (community) {
+            community.save();
+            // deleteEventFromInterest(community.comType,communityId,eventId);
             response.successResponse(res, community, "Event deleted successfully");
         }
         else {
