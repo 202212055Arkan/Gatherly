@@ -52,9 +52,9 @@ exports.createEvents = async (req, res) => {
             })
             await community.save();
             //have to confirm this
-            console.log("-->", community.events[0]._id);
-            addEventInIntrest(intrest, community.events[0]._id, cid);
-            response.successfullyCreatedResponse(res, community.events, "Event Created");
+            console.log("-->", community.currentEvents[0]._id);
+            addEventInIntrest(intrest, community.currentEvents[0]._id, cid);
+            response.successfullyCreatedResponse(res, community.currentEvents, "Event Created");
         }
         else {
             response.notFoundResponse(res, "Community Not Found")
