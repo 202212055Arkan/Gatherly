@@ -13,7 +13,7 @@ const eventSchema = new Schema({
     },
     interest:{
         type:String,
-        required:true,
+        // required:true,
     },
     
     location: {
@@ -28,6 +28,7 @@ const eventSchema = new Schema({
     },
     date: {
         type: Date,
+        
         required: true,
         validate: {
             validator: function(value) {
