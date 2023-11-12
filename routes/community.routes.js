@@ -27,6 +27,6 @@ router.route('/:cid/currentevents/:eid')
 
 router.route('/:cid/pastEvents/:eid')
     .get(eventController.getPastEventById)
-    // .delete(eventController.deletePastEventById);
+    .delete(eventController.deletePastEventById);
 
 module.exports = router;
