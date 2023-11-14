@@ -1,6 +1,7 @@
 const response = require("../utils/response");
 const Interests = require("../models/interest.model");
 const interestModel = require("../models/interest.model");
+const communityModel = require("../models/community.model");
 
 exports.addInterest = async (req, res) => {
     try {
@@ -40,7 +41,7 @@ exports.deleteInterests = async (req, res) => {
 }
 exports.addEventInIntrest = async (intrestName, eventId, communityId, res) => {
     try {
-
+        console.log("Hello");
         const interest = await interestModel.findOne({ interestName: intrestName });
         if (interest) {
             interest.events.push({
@@ -75,7 +76,7 @@ exports.addCommunityInIntrest = async (intrestName, communityId, res) => {
         console.log(error, "Not created");
     }
 }
-exports.deleteEventFromInterest= async (intrestName, communityId, eventId, res) => {
+exports.deleteEventFromInterest = async (intrestName, communityId, eventId, res) => {
     try {
 
         const updatedInterests = await interestModel.findOneAndUpdate(
@@ -163,5 +164,57 @@ exports.deleteAlltheEventOfOneCommunity = async (communityId, intrestName) => {
         console.log(error, "Not created");
     }
 
+}
+exports.getEventsOfInterest = async (req, res) => {
+    try {
+        const interestName = req.params.interestName;
+        const interestObj = await interestModel.findOne({ interestName: interestName });
+        const events = [];
+        console.log("Hello");
+        // Filtering out the past events
+        if (interestObj) {
+            const eventsOfInterest = interestObj.events;
+
+            try {
+                for (const obj of eventsOfInterest) {
+                    const cid = obj.communityId;
+                    const eid = obj.eventID;
+
+                    // Finding events from the community
+                    const community = await communityModel.findById(cid);
+                    const event = community.currentEvents.find(event => event._id.equals(eid));
+
+                    console.log(event);
+
+                    // Shifting the expired events from current to past
+                    if (event) {
+                        if (new Date(event.date) <= new Date()) {
+                            community.currentEvents = community.currentEvents.filter(event => !event._id.equals(eid));
+                            community.pastEvents.push(event);
+                        } else {
+                            // Adding legit events to the returning object
+                            events.push(...events,event);
+                           
+                        }
+                    } else {
+                        console.log("Event not found");
+                        // response.notFoundResponse(res, "Ev");
+                    }
+                }
+
+                // Returning all the legit events
+                console.log("-->", events);
+                response.successResponse(res, events);
+
+            } catch (error) {
+                response.notFoundResponse(res, "Problem in community of interest");
+            }
+        } else {
+            response.notFoundResponse(res, "Interest doesn't exist");
+        }
+
+    } catch (error) {
+        response.notFoundResponse(res, "Problem in getting events of the particular interest");
+    }
 }
 
