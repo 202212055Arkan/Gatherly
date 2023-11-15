@@ -2,6 +2,7 @@ const response = require("../utils/response");
 const Communities = require("../models/community.model");
 const Interests = require("../models/interest.model");
 const communityModel = require("../models/community.model");
+const { deleteCommunityOfInterest } = require("./interest.controller");
 
 
 exports.getAllCommunity = async (req,res) => {
@@ -55,6 +56,7 @@ exports.deleteCommunityById=async(req,res)=>{
         const cid = req.params.cid;
         const community=await communityModel.findByIdAndDelete(cid);
         if(community){
+            deleteCommunityOfInterest(community.comType,cid);
             response.successResponse(res,community);
         }
         else

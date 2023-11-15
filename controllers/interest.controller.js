@@ -106,7 +106,7 @@ exports.deleteEventFromInterest = async (intrestName, communityId, eventId, res)
     }
 
 }
-exports.deleteCommunity = async (intrestName, communityId, res) => {
+exports.deleteCommunityOfInterest = async (intrestName, communityId, res) => {
     try {
 
         const updatedInterests = await interestModel.findOneAndUpdate(
@@ -124,11 +124,12 @@ exports.deleteCommunity = async (intrestName, communityId, res) => {
         );
 
         if (updatedInterests) {
+            this.deleteAlltheEventOfOneCommunity(communityId,intrestName);
             updatedInterests.save();
             console.log("Community deleted Sucessfully");
         }
         else {
-            console.log("Response Not Found");
+            console.log("Community doesn't Exist");
         }
     }
     catch (error) {
