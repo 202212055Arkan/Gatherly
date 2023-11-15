@@ -35,6 +35,15 @@ exports.createCommunity = async (req,res) => {
     }
 }
 
+exports.searchCommunity = async (req,res) => {
+    try {
+        
+    } catch (error) {
+        console.log(error); 
+        response.serverErrorResponse(res,error,"Not created");
+    }
+}
+
 exports.deleteCommunity = async (req,res) => {
     try {
         
