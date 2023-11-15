@@ -4,6 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 require('dotenv').config();
+// require('./eventScheduler');
+
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users.routes');
@@ -27,7 +29,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/interests',interestRouter);
 app.use('/communities',communityRouter);
-app.use('/events',eventRouter);
+// app.use('/communities/:cid/events', eventRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -6,6 +6,9 @@ const interestSchema = new Schema( {
         unique: true
     },
     communities:[],
-    events: [{eventID:String,communityId:String}]
+    events: [{
+        eventID:String,
+        communityId:String
+    }]
   })
   module.exports = mongoose.model('Interests', interestSchema)
