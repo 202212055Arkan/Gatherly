@@ -184,7 +184,7 @@ exports.getEventsOfInterest = async (req, res) => {
                     const community = await communityModel.findById(cid);
                     const event = community.currentEvents.find(event => event._id.equals(eid));
 
-                    console.log(event);
+                    // console.log(event);
 
                     // Shifting the expired events from current to past
                     if (event) {
@@ -197,13 +197,14 @@ exports.getEventsOfInterest = async (req, res) => {
                            
                         }
                     } else {
+                        //If event doesn't exist in interest then delete it as it is possible that event may expired
+                        this.deleteEventFromInterest(interestName,cid,eid);
                         console.log("Event not found");
-                        // response.notFoundResponse(res, "Ev");
                     }
                 }
 
                 // Returning all the legit events
-                console.log("-->", events);
+                // console.log("-->", events);
                 response.successResponse(res, events);
 
             } catch (error) {
