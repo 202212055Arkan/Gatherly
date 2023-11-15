@@ -212,4 +212,35 @@ exports.deletePastEventById = async (req, res) => {
       response.serverErrorResponse(res, 'Error in event get by id');
     }
   };
+  exports.shfitEventFromCurrentToPast(cid,eid)
+  {
+   
+    const events=[];
+            try {
+
+                    const community = await communityModel.findById(cid);
+                    const event = community.currentEvents.find(event => event._id.equals(eid));
+                    // Shifting the expired events from current to past
+                    if (event) {
+                        if (new Date(event.date) <= new Date()) {
+                            community.currentEvents = community.currentEvents.filter(event => !event._id.equals(eid));
+                            community.pastEvents.push(event);
+                        } else {
+                            // Adding legit events to the returning object
+                            events.push(...events,event);
+                           
+                        }
+                    } else {
+                        //If event doesn't exist in interest then delete it as it is possible that event may expired
+                        this.deleteEventFromInterest(interestName,cid,eid);
+                        console.log("Event not found");
+                    }
+
+                response.successResponse(res, events);
+
+            } catch (error) {
+                response.notFoundResponse(res, "Problem in community of interest");
+            }
+        
+  }
   
