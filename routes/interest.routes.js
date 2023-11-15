@@ -14,6 +14,7 @@ router.route('/')
     .post(interestController.addInterest)
     .delete(interestController.deleteInterests);
 
+
 router.route('/:interestName/events')
     .get(interestController.getEventsOfInterest);
     

@@ -8,7 +8,11 @@ const communityController = require('../controllers/community.controller');
 router.route('/')
     .get(communityController.getAllCommunity)
     .post(communityController.createCommunity)
-    .delete(communityController.deleteCommunity)
+    .delete(communityController.deleteCommunity)//incomplete
+
+router.route('/:cid')
+    .get(communityController.getCommunityById)
+    .delete(communityController.deleteCommunityById)
 
 router.route('/:cid/currentEvents')
     .get(eventController.getCurrentEvents)

@@ -1,6 +1,7 @@
 const response = require("../utils/response");
 const Communities = require("../models/community.model");
 const Interests = require("../models/interest.model");
+const communityModel = require("../models/community.model");
 
 
 exports.getAllCommunity = async (req,res) => {
@@ -34,7 +35,36 @@ exports.createCommunity = async (req,res) => {
         response.serverErrorResponse(res,error,"Not created");
     }
 }
-
+exports.getCommunityById=async(req,res)=>{
+    try {
+        const cid = req.params.cid;
+        const community=await communityModel.findById(cid);
+        if(community){
+            response.successResponse(res,community);
+        }
+        else
+        {
+            response.notFoundResponse(res,"Community doesn't Exist");
+        }
+    } catch (error) {
+        response.serverErrorResponse(error,"Error in get Community by id");
+    }
+}
+exports.deleteCommunityById=async(req,res)=>{
+    try {
+        const cid = req.params.cid;
+        const community=await communityModel.findByIdAndDelete(cid);
+        if(community){
+            response.successResponse(res,community);
+        }
+        else
+        {
+            response.notFoundResponse(res,"Community doesn't Exist");
+        }
+    } catch (error) {
+        response.serverErrorResponse(error);
+    }
+}
 exports.deleteCommunity = async (req,res) => {
     try {
         
