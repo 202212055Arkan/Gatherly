@@ -2,6 +2,7 @@ const response = require("../utils/response");
 const Interests = require("../models/interest.model");
 const interestModel = require("../models/interest.model");
 const communityModel = require("../models/community.model");
+const { shfitEventFromCurrentToPast } = require("./Events/events");
 
 exports.addInterest = async (req, res) => {
     try {
@@ -180,33 +181,42 @@ exports.getEventsOfInterest = async (req, res) => {
                 for (const obj of eventsOfInterest) {
                     const cid = obj.communityId;
                     const eid = obj.eventID;
-
-                    // Finding events from the community
-                    const community = await communityModel.findById(cid);
-                    const event = community.currentEvents.find(event => event._id.equals(eid));
-
-                    // console.log(event);
-
-                    // Shifting the expired events from current to past
-                    if (event) {
-                        if (new Date(event.date) <= new Date()) {
-                            community.currentEvents = community.currentEvents.filter(event => !event._id.equals(eid));
-                            community.pastEvents.push(event);
-                        } else {
-                            // Adding legit events to the returning object
-                            events.push(...events,event);
-                           
-                        }
-                    } else {
-                        //If event doesn't exist in interest then delete it as it is possible that event may expired
-                        this.deleteEventFromInterest(interestName,cid,eid);
-                        console.log("Event not found");
+                    // console.log(events);
+                    const event=await shfitEventFromCurrentToPast(cid,eid,events,res);
+                    if(!event)
+                    {
+                        deleteEventFromInterest(interestName,cid,eid);
                     }
-                }
+                    else
+                    {
+                        events.push(event);
+                    }
+                    // Finding events from the community
+                    // const community = await communityModel.findById(cid);
+                    // const event = community.currentEvents.find(event => event._id.equals(eid));
 
+
+                    // // Shifting the expired events from current to past
+                    // if (event) {
+                    //     if (new Date(event.date) <= new Date()) {
+                    //         community.currentEvents = community.currentEvents.filter(event => !event._id.equals(eid));
+                    //         community.pastEvents.push(event);
+                    //     } else {
+                    //         // Adding legit events to the returning object
+                    //         events.push(...events,event);
+                           
+                    //     }
+                    // } else {
+                    //     //If event doesn't exist in interest then delete it as it is possible that event may expired
+                    //     this.deleteEventFromInterest(interestName,cid,eid);
+                    //     console.log("Event not found");
+                    // }
+                
+                }
                 // Returning all the legit events
                 // console.log("-->", events);
                 response.successResponse(res, events);
+                
 
             } catch (error) {
                 response.notFoundResponse(res, "Problem in community of interest");

@@ -73,3 +73,5 @@ exports.getAllUsers = async (req,res) =>{
         
     }
 }  
+exports.getCurrentEvents=async(req,res)=>{
+    }

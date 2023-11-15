@@ -9,6 +9,9 @@ router.post('/signup',userController.signup);
 router.post('/login',userController.login);
 router.put('/edit-profile',userController.editProfile);
 
+router.route('/events')
+    .get()
+
 
 
 /* GET users listing. */

@@ -18,4 +18,6 @@ router.route('/')
 router.route('/:interestName/events')
     .get(interestController.getEventsOfInterest);
     
+
+    
 module.exports = router;
