@@ -182,7 +182,7 @@ exports.getEventsOfInterest = async (req, res) => {
                     const cid = obj.communityId;
                     const eid = obj.eventID;
                     // console.log(events);
-                    const event=await shfitEventFromCurrentToPast(cid,eid,events,res);
+                    const event=await shfitEventFromCurrentToPast(cid,eid,res);
                     if(!event)
                     {
                         deleteEventFromInterest(interestName,cid,eid);

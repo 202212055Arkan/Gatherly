@@ -10,7 +10,8 @@ router.post('/login',userController.login);
 router.put('/edit-profile',userController.editProfile);
 
 router.route('/events')
-    .get()
+    .get(userController.getCurrentEventsInUser)
+    .post(userController.addCurrentEventInUser)
 
 
 

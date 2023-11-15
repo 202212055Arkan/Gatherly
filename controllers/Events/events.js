@@ -8,7 +8,7 @@ const { deleteEventFromInterest } = require("../interest.controller");
 
 
 
-exports.shfitEventFromCurrentToPast=async(cid,eid,events,res)=>
+exports.shfitEventFromCurrentToPast=async(cid,eid,res)=>
   {
    
     // const events=[];
