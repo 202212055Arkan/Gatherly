@@ -37,12 +37,18 @@ let userSchema = new Schema({
     },
     interests:[],
     events: {
-        upcommingEvents:[],
-        pastEvents:[]
+        upcommingEvents:[{
+            eventID:String,
+            communityId:String
+        }],
+        pastEvents:[{
+            eventID:String,
+            communityId:String
+        }]
     },
     communities:{
-        joined:[],
-        created:[]
+        joined:[{communityId:String}],
+        created:[{communityId:String}]
     },
     city:{
         type: String,
