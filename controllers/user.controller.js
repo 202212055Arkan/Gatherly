@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const generateToken = require("../utils/generateToken");
 const userModel = require("../models/user.model");
 const { shfitEventFromCurrentToPast } = require("./Events/events");
+const communityModel = require("../models/community.model");
 
 exports.signup = async (req,res) =>{
     try {
@@ -75,11 +76,37 @@ exports.getAllUsers = async (req,res) =>{
         
     }
 }  
-exports.addCurrentEventInUser = async (req, res) => {
+exports.deleteCurrentEventFromUser=async(req,res)=>{
     try {
         const uid = "65421dfc3bd4692937316f6d";
         const cid = req.body.communityId;
         const eid = req.body.eventID;
+        const user = await userModel.findById(uid);
+
+        if(user)
+        {
+            user.events.upcomingEvents.pull({
+                eventID: eid,
+                communityId: cid,
+            });
+            await user.save();
+        }
+        else
+        {
+            console.log("User doesn't Exist");
+        }
+        
+    } catch (error) {
+        response.serverErrorResponse(res, "Error in posting event in user");   
+    }
+    
+
+}
+exports.addCurrentEventInUser = async (uid,cid,eid) => {
+    try {
+        // const uid = "65421dfc3bd4692937316f6d";
+        // const cid = req.body.communityId;
+        // const eid = req.body.eventID;
 
         const user = await userModel.findById(uid);
 
@@ -120,6 +147,7 @@ exports.getCurrentEventsInUser=async(req,res)=>{
                 //That's Why we are shifting that even to past event
                 //We are sure that this event is expired not deleted as
                 //if we delete the event then that time we will delete event from the user as well
+                await this.deleteCurrentEventFromUser(uid,cid,eid);
                 userCurrentEvents.events.pastEvents.push({cid,eid});
             }
             else
@@ -134,5 +162,4 @@ exports.getCurrentEventsInUser=async(req,res)=>{
         
     }
     
-    
-    }
+}
