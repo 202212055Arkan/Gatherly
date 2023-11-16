@@ -59,7 +59,8 @@ exports.login = async (req,res) =>{
 
 exports.editProfile = async (req,res) =>{
     try {
-        
+        console.log(req.userId);
+        response.successResponse(res);
     } catch (error) {
         
     }

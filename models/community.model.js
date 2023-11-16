@@ -17,6 +17,10 @@ const communitySchema = new Schema( {
         required: true
     },
     members: [],
+    communityAdmin: {
+        type: String,
+        required: true
+    },
     currentEvents: [eventSchema],
     pastEvents:[]
   })

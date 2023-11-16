@@ -30,6 +30,7 @@ exports.getAllInterest = async (req, res) => {
         response.serverErrorResponse(res, error, "Not created");
     }
 }
+
 exports.deleteInterests = async (req, res) => {
     try {
         const obj = await Interests.deleteMany({});
@@ -39,6 +40,7 @@ exports.deleteInterests = async (req, res) => {
         response.serverErrorResponse(res, error, "Not created");
     }
 }
+
 exports.addEventInIntrest = async (intrestName, eventId, communityId, res) => {
     try {
         console.log("Hello");
@@ -58,6 +60,7 @@ exports.addEventInIntrest = async (intrestName, eventId, communityId, res) => {
         console.log("Error in adding Event in intrest");
     }
 }
+
 exports.addCommunityInIntrest = async (intrestName, communityId, res) => {
     try {
 
@@ -76,6 +79,7 @@ exports.addCommunityInIntrest = async (intrestName, communityId, res) => {
         console.log(error, "Not created");
     }
 }
+
 exports.deleteEventFromInterest = async (intrestName, communityId, eventId, res) => {
     try {
 

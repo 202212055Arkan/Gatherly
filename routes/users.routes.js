@@ -1,13 +1,13 @@
 var express = require('express');
 var router = express.Router();
-
+const verifyUser = require('../middlewares/authentication');
 
 
 const userController = require('../controllers/user.controller');
 
 router.post('/signup',userController.signup);
 router.post('/login',userController.login);
-router.put('/edit-profile',userController.editProfile);
+router.put('/edit-profile',verifyUser,userController.editProfile);
 
 
 

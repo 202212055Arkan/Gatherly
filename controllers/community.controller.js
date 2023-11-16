@@ -10,7 +10,7 @@ exports.getAllCommunity = async (req,res) => {
         const communities = await Communities.find({});
         response.successResponse(res,communities)
     } catch (error) {
-        console.log(error); 
+        console.log(error);
         response.serverErrorResponse(res,error,"Not created");
     }
 }
@@ -26,7 +26,8 @@ exports.createCommunity = async (req,res) => {
         const  Community = new Communities({
             communityName: communityName,
             description: description,
-            comType: comType
+            comType: comType,
+            communityAdmin:req.user._id
         }) 
         await Community.save();
         await Interests.findByIdAndUpdate(Community.comType,{$push: {communities: Community._id}});

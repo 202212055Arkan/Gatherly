@@ -19,11 +19,9 @@ router.route('/:cid/currentEvents')
     .post(eventController.createEvents)
     .delete(eventController.deleteCurrentEvents)
 
-
 router.route('/:cid/pastEvents')
     .get(eventController.getPastEvents)
     .delete(eventController.deletePastEvents)
-
 
 router.route('/:cid/currentevents/:eid')
     .get(eventController.getCurrentEventById)
