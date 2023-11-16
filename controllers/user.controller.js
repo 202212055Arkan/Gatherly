@@ -173,6 +173,9 @@ exports.getJoinedCommunitiesFromUser = async (req, res) => {
 
             if (!community) {
                 // If community doesn't Exist then we will delete that community from the user
+                user.events.upcomingEvents = user.events.upcomingEvents.filter(event => event.communityId !== cid);
+                user.events.pastEvents = user.events.pastEvents.filter(event => event.communityId !== cid);
+
                 user.communities.joined.pull(community._id);
             } else {
                 Communities.push(community);
