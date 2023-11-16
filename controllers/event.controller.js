@@ -2,6 +2,7 @@ const response = require("../utils/response");
 // const Communities = require("../models/community.model");
 const communityModel = require("../models/community.model");
 const { addEventInIntrest, deleteAlltheEventOfOneCommunity, deleteEventFromInterest } = require("./interest.controller");
+const { deleteCurrentEventFromUser } = require("./user.controller");
 
 exports.getCurrentEvents = async (req, res) => {
     try {
@@ -52,9 +53,9 @@ exports.createEvents = async (req, res) => {
             })
             await community.save();
             //have to confirm this
-            console.log("-->", community.currentEvents[0]._id,interest);
-             addEventInIntrest(interest, community.currentEvents[0]._id, cid);
-        //    console.log(e);
+            console.log("-->", community.currentEvents[0]._id, interest);
+            addEventInIntrest(interest, community.currentEvents[0]._id, cid);
+            //    console.log(e);
             response.successfullyCreatedResponse(res, community.currentEvents, "Event Created");
         }
         else {
@@ -158,7 +159,7 @@ exports.deleteCurrentEventById = async (req, res) => {
     try {
         const communityId = req.params.cid;
         const eventId = req.params.eid;
-
+        const event = community.currentEvents.find(event => event._id = eventId);
         const community = await communityModel.findByIdAndUpdate(communityId,
             {
                 $pull: {
@@ -168,8 +169,20 @@ exports.deleteCurrentEventById = async (req, res) => {
             { new: true }
         )
         if (community) {
-            community.save();
-            deleteEventFromInterest(community.comType,communityId,eventId);
+            community.save()
+            if (event.attendees) {
+                //delete event from the user
+                event.attendees.forEach(async (user) => {
+                    try {
+                        await deleteCurrentEventFromUser(user, communityId, eventId);
+
+                    } catch (error) {
+                        response.serverErrorResponse(res, "Error in deleteCurrentEventFromUser");
+                    }
+                })
+            }
+            //delete event from the interest
+            deleteEventFromInterest(community.comType, communityId, eventId);
             response.successResponse(res, community, "Event deleted successfully");
         }
         else {
@@ -182,34 +195,33 @@ exports.deleteCurrentEventById = async (req, res) => {
 }
 exports.deletePastEventById = async (req, res) => {
     try {
-      const communityId = req.params.cid;
-      const eventId = req.params.eid;
-  
-      const community = await communityModel.findByIdAndUpdate(
-        communityId,
-        {
-          $pull: {
-            pastEvents: { _id: eventId }
-          }
-        },
-        { new: true }
-      );
-  
-      if (community) {
-        // Log the community object before and after the operation
-        console.log('Community Before:', community);
-  
-        await community.save();
-  
-        console.log('Community After:', community);
-  
-        response.successResponse(res, community, 'Event deleted successfully');
-      } else {
-        response.notFoundResponse(res, 'Event not found');
-      }
+        const communityId = req.params.cid;
+        const eventId = req.params.eid;
+
+        const community = await communityModel.findByIdAndUpdate(
+            communityId,
+            {
+                $pull: {
+                    pastEvents: { _id: eventId }
+                }
+            },
+            { new: true }
+        );
+
+        if (community) {
+            // Log the community object before and after the operation
+            console.log('Community Before:', community);
+
+            await community.save();
+
+            console.log('Community After:', community);
+
+            response.successResponse(res, community, 'Event deleted successfully');
+        } else {
+            response.notFoundResponse(res, 'Event not found');
+        }
     } catch (error) {
-      console.error(error);
-      response.serverErrorResponse(res, 'Error in event get by id');
+        console.error(error);
+        response.serverErrorResponse(res, 'Error in event get by id');
     }
-  };
-  
+};

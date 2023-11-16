@@ -47,8 +47,8 @@ let userSchema = new Schema({
         }]
     },
     communities:{
-        joined:[],
-        created:[]
+        joined:[{communityId:String}],
+        created:[{communityId:String}]
     },
     city:{
         type: String,
