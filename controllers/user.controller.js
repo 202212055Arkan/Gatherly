@@ -40,7 +40,7 @@ exports.login = async (req, res) => {
         }
         const ok = await bcrypt.compare(password, user.password);
         if (ok) {
-            const token = generateToken(user.email);
+            const token = generateToken(user._id);
             const resObj = {
                 token: token,
                 user: user
@@ -93,7 +93,7 @@ exports.getAllUsers = async (req, res) => {
         }
     }
 }
-exports.deleteCreatedCommunityFromUser = async (uid, cid) => {
+exports.deleteCreatedCommunityFromUser = async (req,res,uid, cid) => {
     try {
 
         const user = await userModel.findById(uid);

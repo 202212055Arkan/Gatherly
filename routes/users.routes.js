@@ -7,7 +7,7 @@ const userController = require('../controllers/user.controller');
 
 router.post('/signup',userController.signup);
 router.post('/login',userController.login);
-router.put('/edit-profile',verifyUser,userController.editProfile);
+router.put('/edit-profile',userController.editProfile);
 
 router.route('/events')
     .get(userController.getCurrentEventsInUser)

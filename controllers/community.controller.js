@@ -17,23 +17,38 @@ exports.getAllCommunity = async (req, res) => {
 }
 exports.createCommunity = async (req, res) => {
     try {
-        console.log("here");
         const { communityName, description, comType } = req.body;
-        const comByName = await Communities.findOne({ communityName: communityName });
-        if (comByName) {
-            return response.recordAlreadyExistResponse(res, "Community Already Exist");
+
+        // Check if comType exists in Interests
+        const interest = await Interests.findOne({interestName:comType});
+        if (!interest) {
+            return response.notFoundResponse(res, "Interest not found");
         }
-        const Community = new Communities({
-            communityName: communityName,
-            description: description,
-            comType: comType,
-            communityAdmin:req.user._id
-        }) 
-        await Community.save();
-        await Interests.findByIdAndUpdate(Community.comType, { $push: { communities: Community._id } });
-        response.successfullyCreatedResponse(res, Community, "Community Created Successfully");
+
+        // Check if a community with the same name already exists
+        const existingCommunity = await Communities.findOne({ communityName });
+        if (existingCommunity) {
+            return response.recordAlreadyExistResponse(res, "Community Already Exists");
+        }
+
+        // Create a new community
+        const community = new Communities({
+            communityName,
+            description,
+            comType,
+            communityAdmin: req.user._id
+        });
+
+        // Save the community to the database
+        await community.save();
+
+        // Update the corresponding Interests document
+        await Interests.findOneAndUpdate({interestName:comType}, { $push: { communities: community._id } });
+
+        // Send a success response
+        response.successfullyCreatedResponse(res, community, "Community Created Successfully");
     } catch (error) {
-        console.log(error);
+        console.error(error);
         response.serverErrorResponse(res, error, "Not created");
     }
 }
@@ -66,9 +81,10 @@ exports.getCommunityById = async (req, res) => {
 exports.deleteCommunityById = async (req, res) => {
     try {
         const cid = req.params.cid;
-        const community = await communityModel.findByIdAndDelete(cid);
+        const community = await communityModel.findById(cid);
         if (community) {
             //delete community from the admin
+            const userId = req.user._id;
             deleteCreatedCommunityFromUser(userId,cid);
             if (community.members) {
                 //delete from the user
@@ -77,19 +93,21 @@ exports.deleteCommunityById = async (req, res) => {
                         await deleteJoinedCommunityFromUser(userId, cid);
 
                     } catch (error) {
-                        response.serverErrorResponse(error, "Error in deleteJoinedCommunityFromUser")
+                        return response.serverErrorResponse(error, "Error in deleteJoinedCommunityFromUser")
                     }
                 })
             }
             //delete from the interest
             deleteCommunityOfInterest(community.comType, cid);
-            response.successResponse(res, community);
+            const com = await communityModel.findByIdAndDelete(cid);
+            return response.successResponse(res, com);
         }
         else {
-            response.notFoundResponse(res, "Community doesn't Exist");
+            return response.notFoundResponse(res, "Community doesn't Exist");
         }
     } catch (error) {
-        response.serverErrorResponse(error);
+        console.log(error);
+        return response.serverErrorResponse(res,error);
     }
 }
 

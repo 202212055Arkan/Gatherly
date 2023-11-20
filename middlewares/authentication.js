@@ -1,22 +1,41 @@
 const jwt = require("jsonwebtoken");
+const response = require("../utils/response");
+const Community = require("../models/community.model");
 
-module.exports = (req, res, next) => {
-    const token = req.headers.authorization;
-    jwt.verify(token, process.env.SECRETKEY, (err, decoded) => {
-        if (err) {
-          // JWT verification failed
-          console.error('JWT verification failed:', err.message);
-          return res.status(401).json({ error: 'Unauthorized' });
-        } else {
-          // JWT verification successful
-          console.log('JWT verified successfully:', decoded);
-    
-          // Attach the user ID to the request object for use in subsequent middleware or routes
-          req.userId = decoded.email;
-    
-          // Continue to the next middleware or route
-          next();
-        }
-      });
-           
+exports.verifyUser = async (req, res, next) => {
+  const token = req.headers.authorization;
+  if(!token)
+  {
+    return response.unauthorizedResponse(res,"Unathorized");
+  }
+  console.log(token);
+  jwt.verify(token, process.env.SECRETKEY, (err, decoded) => {
+    if (err) {
+      console.error('JWT verification failed:', err.message);
+      return response.unauthorizedResponse(res,"Sign in required");
+    } else {
+      console.log('JWT verified successfully:', decoded);
+      const user ={_id : decoded.id};
+      req.user = user;
+      next();
+    }
+  });
+};
+exports.verifyCommunityAdmin = async (req,res,next) => {
+   const cid = req.params.cid;
+   const community = await Community.findById(cid);
+   if(community){
+     if(community.communityAdmin == req.user._id)
+     {
+      return next();
+     }
+     else
+     {
+      return response.unauthorizedResponse(res,"Unauthorized Community access");
+     }
+   }
+   else
+   {
+    return response.notFoundResponse(res,"Community does not exist");  
+   }
 };

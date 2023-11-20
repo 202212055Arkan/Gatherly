@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
-module.exports = (email) => {
+module.exports = (userId) => {
     const jwtToken = jwt.sign({
-        email: email
+        id: userId
     }, process.env.SECRETKEY, {
         expiresIn: "24h"
     });
