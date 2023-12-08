@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1" width="1080" height="1080" viewBox="0 0 1080 1080" xmlSpace="preserve">
+  <desc>Created with Fabric.js 5.2.4</desc>
+  <defs></defs>
+  <g transform="matrix(1 0 0 1 540 540)" id="2b074fa6-4e41-47cb-94b1-3d729798230e">
+    <rect style={{ stroke: 'none', strokeWidth: 1, strokeDasharray: 'none', strokeLinecap: 'butt', strokeDashoffset: 0, strokeLinejoin: 'miter', strokeMiterlimit: 4, fill: 'rgb(255,255,255)', fillRule: 'nonzero', opacity: 1, visibility: 'hidden' }} vectorEffect="non-scaling-stroke" x="-540" y="-540" rx="0" ry="0" width="1080" height="1080" />
+  </g>
+  <g transform="matrix(1 0 0 1 540 540)" id="8b37cac0-206a-4394-9617-126d6a23ff56"></g>
+  <g transform="matrix(NaN NaN NaN NaN 0 0)">
+    <g style={{}}></g>
+  </g>
+  <g transform="matrix(1 0 0 1 540.5 540.5)" style={{}} id="f6c09fb8-752a-4051-bcea-5f1e042fa956">
+    <text xmlSpace="preserve" fontFamily="Raleway" fontSize="105" fontStyle="normal" fontWeight="900" style={{ stroke: 'none', strokeWidth: 1, strokeDasharray: 'none', strokeLinecap: 'butt', strokeDashoffset: 0, strokeLinejoin: 'miter', strokeMiterlimit: 4, fill: 'rgb(246,64,96)', fillRule: 'nonzero', opacity: 1, whiteSpace: 'pre' }}>
+      <tspan x="-224.54" y="32.98">Gatherly</tspan>
+    </text>
+  </g>
+  <g transform="matrix(NaN NaN NaN NaN 0 0)">
+    <g style={{}}></g>
+  </g>
+</svg>
